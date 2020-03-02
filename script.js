@@ -28,7 +28,8 @@ function isValidEmail(email) {
 function checkRequired(inputArray) {
   inputArray.forEach(function(input) {
     if (input.value.trim() === '') {
-      showError(input, `${input.id} é um (a) Campo Obrigatorio`);
+      showError(input, `${getFieldName(input)} é um (a) Campo Obrigatorio`);
+      //Check if email it is valid
     } else if (!isValidEmail(email.value)) {
       showError(email, 'Coloque um email valido');
     } else {
@@ -37,9 +38,42 @@ function checkRequired(inputArray) {
   });
 }
 
+//Check input lenght
+function checkLength(input, min, max) {
+  if (input.value.length < min) {
+    showError(
+      input,
+      `${getFieldName(input)} deve ter no minimo ${min} caracteres`
+    );
+  } else if (input.value.length > max) {
+    showError(
+      input,
+      `${getFieldName(input)} deve ter no maximo ${max} caracteres`
+    );
+  } else {
+    showSuccess(input);
+  }
+}
+
+// Check passwords match
+function checkPasswordsMatch(input1, input2) {
+  if (input1.value !== input2.value) {
+    showError(input2, 'As senhas devem ser iguais');
+  }
+}
+
+//Get fieldname
+function getFieldName(input) {
+  return input.id.charAt(0).toUpperCase() + input.id.slice(1);
+}
+
 //Event listeners
 form.addEventListener('submit', function(e) {
   e.preventDefault();
 
   checkRequired([username, email, password, password2]);
+  checkLength(username, 3, 15);
+  checkLength(password, 6, 25);
+  checkLength(password2, 6, 25);
+  checkPasswordsMatch(password, password2);
 });
